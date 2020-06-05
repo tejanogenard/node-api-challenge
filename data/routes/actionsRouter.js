@@ -32,6 +32,7 @@ router.post('/', validateProjectId, (req, res) => {
         });
 });
 
+//Put endpoint to update an action by id 
 router.put('/:id', validateActionId, (req, res) => {
     actions
     .update(req.params.id, req.body)
@@ -43,6 +44,7 @@ router.put('/:id', validateActionId, (req, res) => {
     })
 })
 
+//Delete endpoint to delete an action by id 
 router.delete('/:id', validateActionId, (req, res) => {
     actions
         .remove(req.params.id)
