@@ -13,6 +13,11 @@ router.get('/', (req, res) => {
     }))
 })
 
+//Get endpoint for a single action by Id 
+router.get('/:id', validateActionId, (req, res) => {
+    res.status(200).json(req.action)
+})
+
 //Post endpoint to create a new action 
 router.post('/', validateProjectId, (req, res) => {
 const body = req.body;
@@ -24,7 +29,7 @@ actions
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            errorMessage: 'Error posting new action'
+           message: 'Error posting new action'
         });
     });
 
@@ -40,17 +45,34 @@ function validateProjectId(req, res, next) {
                     project = req.project;
                     next();
                 } else {
-                    res.status(404).json({ errorMessage: 'Project with that ID does not exist' });
+                    res.status(404).json({ message: 'Project with that ID does not exist' });
                 }
             })
             .catch(err => {
                 console.log(err);
-                res.status(500).json({ errorMessage: 'Error finding project' });
+                res.status(500).json({ message: 'Error finding project' });
             });
     } else {
         res.status(400).json({ error: 'The project_id field is required' });
     };
 };
+
+function validateActionId(req, res, next){
+    const id = req.params.id 
+    actions
+        .get(id)
+        .then(action => {
+            if(action) {
+                req.action = action
+                next()
+            } else {
+                res.status(404).json({ message: 'cannot find a project with the specified ID"'})
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Internal server error retriving project'})
+        })
+}
 
 
 module.exports = router
