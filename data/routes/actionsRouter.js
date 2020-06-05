@@ -6,11 +6,11 @@ const router = express.Router()
 //Get endpoint for all actions 
 router.get('/', (req, res) => {
     actions.get()
-    .then(action => res.status(200).json(action))
-    .catch(err => res.status(500).json({
-        message: "Actions could not be retrieved",
-        err
-    }))
+        .then(action => res.status(200).json(action))
+        .catch(err => res.status(500).json({
+            message: "Actions could not be retrieved",
+            err
+        }))
 })
 
 //Get endpoint for a single action by Id 
@@ -20,20 +20,37 @@ router.get('/:id', validateActionId, (req, res) => {
 
 //Post endpoint to create a new action 
 router.post('/', validateProjectId, (req, res) => {
-const body = req.body;
-actions
-    .insert(body)
-    .then(newAction => {
-        res.status(200).json(newAction);
+    actions
+        .insert(req.body)
+        .then(newAction => {
+            res.status(200).json(newAction);
+        })
+        .catch(err => {
+                res.status(500).json({
+                message: 'Error posting new action', err
+            });
+        });
+});
+
+router.put('/:id', validateActionId, (req, res) => {
+    actions
+    .update(req.params.id, req.body)
+    .then(updateAction => {
+        res.status(200).json(updateAction)
     })
     .catch(err => {
-        console.log(err);
-        res.status(500).json({
-           message: 'Error posting new action'
-        });
-    });
+        res.status(500).json({ message: "Error updating action", err})
+    })
+})
 
-});
+router.delete('/:id', validateActionId, (req, res) => {
+    actions
+        .remove(req.params.id)
+        .then(action => {
+            res.status(200).json(action)
+        })
+        .catch( err => res.status(500).json({ message: "Error removing action", err}))
+})
 
 // //Middleware
 function validateProjectId(req, res, next) {
