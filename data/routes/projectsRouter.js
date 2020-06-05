@@ -20,9 +20,16 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
     projects.update(req.params.id, req.body)
     .then(project => res.status(200).json(project))
-    .catch(err => res.status(500).json({ errorMessage: `There was a error while retrieving projects.`, err }))
+    .catch(err => res.status(500).json({ message: "There was an error while retrieving projects.", err }))
   });
 
+  //Delete endpoint to delete an existing project 
+  router.delete('/:id', (req, res) => {
+      projects.remove(req.params.id)
+      .then(project => res.status(200).json(project))
+      .catch(err => res.status(500).json({ message: "There was an error deleting projects", err }))
+
+  })
 
 
 module.exports = router
