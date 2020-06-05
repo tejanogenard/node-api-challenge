@@ -18,8 +18,11 @@ router.post('/', (req, res) => {
 
 //Update endpoint to update a current project 
 router.put('/:id', (req, res) => {
-    
-})
+    projects.update(req.params.id, req.body)
+    .then(project => res.status(200).json(project))
+    .catch(err => res.status(500).json({ errorMessage: `There was a error while retrieving projects.`, err }))
+  });
+
 
 
 module.exports = router
